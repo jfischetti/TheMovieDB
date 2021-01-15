@@ -21,7 +21,7 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.viewModel = MoviesViewModel(withAPI: TheMovieDBAPI(networkingManager))
+        self.viewModel = MoviesViewModel(withAPI: TheMovieDBAPI(networkingManager), dataManager: CoreDataStack())
 
         self.setupUI()
         self.setupBindings()
@@ -51,22 +51,50 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
         let layout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
         let screenWidth = collectionView.bounds.size.width
-        layout.itemSize = CGSize(width: screenWidth / 3, height: screenWidth / 3)
+        layout.itemSize = CGSize(width: screenWidth / 2, height: screenWidth / 2)
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         collectionView.collectionViewLayout = layout
     }
 
     private func setupBindings() {
-        // bind datasource
+        // bind collectionview datasource
         _ = viewModel?.contents.bind(to: collectionView.rx.items(cellIdentifier: "Cell", cellType: MovieCollectionViewCell.self) ) { index, content, cell in
 
             cell.title.text = content.title
+
             if let url = content.posterUrl(), let data = try? Data(contentsOf: url){
                 cell.imageView.image = UIImage(data: data)
             } else {
                 cell.imageView.image = UIImage(named: "outline_image_black_48pt")
             }
+
+            let emptyStar = "☆"
+            let filledStar = "★"
+
+            var isSaved = self.viewModel?.isSavedContent(with: content.id!)
+            if let isSaved = isSaved, isSaved == true {
+                cell.saveImage.image = filledStar.image(with: .yellow)
+            } else {
+                cell.saveImage.image = emptyStar.image(with: .black)
+            }
+
+            cell.saveImage.isUserInteractionEnabled = true
+            let tapGesture = UITapGestureRecognizer()
+            cell.saveImage.addGestureRecognizer(tapGesture)
+            tapGesture.rx.event.bind(onNext: { recognizer in
+                print("tapped star on \(cell.title.text)")
+
+                isSaved = self.viewModel?.isSavedContent(with: content.id!)
+                if let isSaved = isSaved, isSaved == true {
+                    cell.saveImage.image = emptyStar.image(with: .black)
+                    self.viewModel?.deleteContent(content: content)
+                } else {
+                    cell.saveImage.image = filledStar.image(with: .yellow)
+                    self.viewModel?.saveContent(content: content)
+                }
+            })
+            .disposed(by: self.disposeBag)
         }
 
         // bind selection
