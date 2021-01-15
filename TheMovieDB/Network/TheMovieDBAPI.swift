@@ -14,6 +14,7 @@ protocol TheMovieDBAPIProtocol {
     func getPopularTV() -> Observable<[TV]?>
     func getTopRatedTV() -> Observable<[TV]?>
     func getMovieDetails(by id:Int) -> Observable<MovieDetail?>
+    func searchMovies(with query: String) -> Observable<[Movie]?>
 }
 
 class TheMovieDBAPI: TheMovieDBAPIProtocol {
@@ -122,6 +123,23 @@ class TheMovieDBAPI: TheMovieDBAPIProtocol {
         return networkingManager.load(resource: resource)
             .map { result -> MovieDetail in
                 result!
+            }
+            .asObservable()
+            .retry(2)
+    }
+
+    func searchMovies(with query: String) -> Observable<[Movie]?> {
+        let urlString = "\(NetworkConstants.baseURL)\(NetworkConstants.searchMoviesPath)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        guard let urlSafeString = urlString, let url = URL(string: urlSafeString) else { return Observable.error(NetworkError.invalidURL) }
+
+        var params: [String: String] = NetworkConstants.defaultRequestParams
+        params["query"] = query
+
+        let resource = Resource<MovieResults?>(url: url, parameter: params)
+
+        return networkingManager.load(resource: resource)
+            .map { results -> [Movie] in
+                results!.movies
             }
             .asObservable()
             .retry(2)

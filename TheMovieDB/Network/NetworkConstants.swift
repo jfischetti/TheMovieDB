@@ -13,6 +13,7 @@ struct NetworkConstants {
     static let baseURL = "https://api.themoviedb.org/3"
     static let discoverMoviesPath = "/discover/movie"
     static let discoverTVPath = "/discover/tv"
+    static let searchMoviesPath = "/search/movie"
     static let getMovieDetailPath = "/movie/"
     static let getTVDetailPath = "/tv/"
     static let imagesBaseURL = "https://image.tmdb.org/t/p/"

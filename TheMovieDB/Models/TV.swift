@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TV: Codable, ContentProtocol {
+struct TV: Decodable, ContentProtocol {
 
     let id: Int?
     let title: String?
