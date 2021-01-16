@@ -18,5 +18,5 @@ struct NetworkConstants {
     static let getTVDetailPath = "/tv/"
     static let imagesBaseURL = "https://image.tmdb.org/t/p/"
     static let posterThumbnailSize = "w92/"
-    static let posterDetailSize = "original/"//"w342/"
+    static let posterDetailSize = "w342/"
 }

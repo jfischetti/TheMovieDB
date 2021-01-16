@@ -108,16 +108,17 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
         // bind selection
         collectionView.rx.modelSelected(ContentProtocol.self)
             .subscribe(onNext: { content in
-                var type = "tv show"
 
                 if let _ = content as? Movie {
-                    type = "movie"
-                }
-
-                print("selected \(type): \(content.title ?? "")")
-                if let vc = UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(identifier: "MovieDetailViewController") as? MovieDetailViewController {
-                    vc.contentID = content.id
-                    self.navigationController?.pushViewController(vc, animated: true)
+                    if let vc = UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(identifier: "MovieDetailViewController") as? MovieDetailViewController {
+                        vc.contentID = content.id
+                        self.navigationController?.pushViewController(vc, animated: true)
+                    }
+                } else {
+                    if let vc = UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(identifier: "TVDetailViewController") as? TVDetailViewController {
+                        vc.contentID = content.id
+                        self.navigationController?.pushViewController(vc, animated: true)
+                    }
                 }
             })
             .disposed(by: disposeBag)
