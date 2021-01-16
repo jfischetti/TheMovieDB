@@ -14,10 +14,10 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
 
     private let disposeBag = DisposeBag()
     var networkingManager = NetworkManager()
-    var viewModel: MoviesViewModelProtocol?
+    var viewModel: (MoviesViewModelProtocol & SaveContentProtocol)?
 
     @IBOutlet weak var collectionView: UICollectionView!
-    var searchBar: UISearchBar?
+    //var searchBar: UISearchBar?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +25,14 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
 
         self.setupUI()
         self.setupBindings()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+
+        // when hitting back, make sure to reload the view to fix saved movies
+        if let title = self.navigationItem.title, let contentType = ContentType(rawValue: title) {
+            displayFeatureCategory(contentType: contentType)
+        }
     }
 
     private func setupUI() {
@@ -130,24 +138,25 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
         // bind search bar's scope bar selection
         navigationItem.searchController?.searchBar.rx.selectedScopeButtonIndex.subscribe(onNext: { [weak self] index in
             let contentType = ContentType(rawValue: (self?.navigationItem.searchController?.searchBar.scopeButtonTitles![index])!)
-
-            self?.navigationController?.navigationBar.topItem?.title = contentType?.rawValue
-
-            switch contentType {
-            case .nowPlayingMovies:
-                self?.viewModel?.getNowPlayingMovies()
-            case .popularMovies:
-                self?.viewModel?.getPopularMovies()
-            case .topRatedMovies:
-                self?.viewModel?.getTopRatedMovies()
-            case .popularTV:
-                self?.viewModel?.getPopularTV()
-            case .topRatedTv:
-                self?.viewModel?.getTopRatedTV()
-            case .none:
-                break
-            }
+            self?.displayFeatureCategory(contentType: contentType!)
         })
         .disposed(by: disposeBag)
+    }
+
+    func displayFeatureCategory(contentType: ContentType) {
+        self.navigationController?.navigationBar.topItem?.title = contentType.rawValue
+
+        switch contentType {
+        case .nowPlayingMovies:
+            self.viewModel?.getNowPlayingMovies()
+        case .popularMovies:
+            self.viewModel?.getPopularMovies()
+        case .topRatedMovies:
+            self.viewModel?.getTopRatedMovies()
+        case .popularTV:
+            self.viewModel?.getPopularTV()
+        case .topRatedTv:
+            self.viewModel?.getTopRatedTV()
+        }
     }
 }

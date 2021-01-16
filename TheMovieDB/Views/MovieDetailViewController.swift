@@ -13,9 +13,10 @@ class MovieDetailViewController : UIViewController {
 
     private let disposeBag = DisposeBag()
     var networkingManager = NetworkManager()
-    var viewModel: MovieDetailViewModelProtocol?
+    var viewModel: (MovieDetailViewModelProtocol & SaveContentProtocol)?
     var contentID: Int?
 
+    @IBOutlet weak var saveImage: UIImageView!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var titleLbl: UILabel!
     @IBOutlet weak var runtimeLbl: UILabel!
@@ -26,7 +27,9 @@ class MovieDetailViewController : UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.viewModel = MovieDetailViewModel(withAPI: TheMovieDBAPI(networkingManager))
+        self.viewModel = MovieDetailViewModel(withAPI: TheMovieDBAPI(networkingManager), dataManager: CoreDataStack())
+
+        self.setupUI()
         self.setupBindings()
 
         if let id = self.contentID {
@@ -34,13 +37,52 @@ class MovieDetailViewController : UIViewController {
         }
     }
 
+    func setupUI() {
+        self.titleLbl.text = ""
+        self.runtimeLbl.text = ""
+        self.ratingLbl.text = ""
+        self.popularityLbl.text = ""
+        self.releaseDateLbl.text = ""
+        self.overviewLbl.text = ""
+    }
+
     func setupBindings() {
+        // setup datasource
         _ = self.viewModel?.movieDetail
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { movieDetail in
                 self.display(with: movieDetail)
             })
             .disposed(by: disposeBag)
+    }
+
+    func setupTapToSaveButton(with content: ContentProtocol) {
+        // setup tap to save
+        let emptyStar = "☆"
+        let filledStar = "★"
+
+        var isSaved = self.viewModel?.isSavedContent(with: content.id!)
+        if let isSaved = isSaved, isSaved == true {
+            self.saveImage.image = filledStar.image(with: .yellow)
+        } else {
+            self.saveImage.image = emptyStar.image(with: .black)
+        }
+
+        self.saveImage.isUserInteractionEnabled = true
+        let tapGesture = UITapGestureRecognizer()
+        self.saveImage.addGestureRecognizer(tapGesture)
+        tapGesture.rx.event.bind(onNext: { recognizer in
+
+            isSaved = self.viewModel?.isSavedContent(with: content.id!)
+            if let isSaved = isSaved, isSaved == true {
+                self.saveImage.image = emptyStar.image(with: .black)
+                self.viewModel?.deleteContent(content: content)
+            } else {
+                self.saveImage.image = filledStar.image(with: .yellow)
+                self.viewModel?.saveContent(content: content)
+            }
+        })
+        .disposed(by: self.disposeBag)
     }
 
     func display(with movieDetail: MovieDetail) {
@@ -53,7 +95,7 @@ class MovieDetailViewController : UIViewController {
         self.titleLbl.text = movieDetail.title
         self.runtimeLbl.text = movieDetail.runtimeString()
         self.ratingLbl.text = "Rating: \(movieDetail.voteAverage ?? 0)"
-        self.popularityLbl.text = "Popularity: \(movieDetail.popularity ?? 0)/10"
+        self.popularityLbl.text = "Popularity: \(movieDetail.popularity ?? 0)"
 
         if let releaseDate = movieDetail.releaseDate {
             self.releaseDateLbl.text = "Release Date: " + releaseDate
@@ -62,5 +104,7 @@ class MovieDetailViewController : UIViewController {
         }
 
         self.overviewLbl.text = movieDetail.overview
+
+        setupTapToSaveButton(with: movieDetail)
     }
 }

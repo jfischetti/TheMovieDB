@@ -90,6 +90,9 @@
 		247B49A025B2284700B4F2F8 /* String+emojiToImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247B499F25B2284600B4F2F8 /* String+emojiToImage.swift */; };
 		247B49A125B2284700B4F2F8 /* String+emojiToImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247B499F25B2284600B4F2F8 /* String+emojiToImage.swift */; };
 		247B49A225B2284700B4F2F8 /* String+emojiToImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247B499F25B2284600B4F2F8 /* String+emojiToImage.swift */; };
+		247B49A725B25D9700B4F2F8 /* SaveContentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247B49A625B25D9600B4F2F8 /* SaveContentProtocol.swift */; };
+		247B49A825B25D9700B4F2F8 /* SaveContentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247B49A625B25D9600B4F2F8 /* SaveContentProtocol.swift */; };
+		247B49A925B25D9700B4F2F8 /* SaveContentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247B49A625B25D9600B4F2F8 /* SaveContentProtocol.swift */; };
 		3A6B83B2021500FE121020D5 /* Pods_TheMovieDBTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1BDE248C9BAFBB042B3C4D5 /* Pods_TheMovieDBTests.framework */; };
 		3D67EFC726A83DE2CB172E0F /* Pods_TheMovieDB_TheMovieDBUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B0A97B1F62F6833B9EFF306 /* Pods_TheMovieDB_TheMovieDBUITests.framework */; };
 		C7703266D22EE0CF26A61297 /* Pods_TheMovieDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59B5BBB12D986ECEA48273BD /* Pods_TheMovieDB.framework */; };
@@ -153,6 +156,7 @@
 		247B498025B209A800B4F2F8 /* Content+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Content+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		247B498D25B20A6300B4F2F8 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		247B499F25B2284600B4F2F8 /* String+emojiToImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+emojiToImage.swift"; sourceTree = "<group>"; };
+		247B49A625B25D9600B4F2F8 /* SaveContentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveContentProtocol.swift; sourceTree = "<group>"; };
 		2DBBEB250489DB1DB13AD994 /* Pods-TheMovieDB-TheMovieDBUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheMovieDB-TheMovieDBUITests.debug.xcconfig"; path = "Target Support Files/Pods-TheMovieDB-TheMovieDBUITests/Pods-TheMovieDB-TheMovieDBUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		3B0A97B1F62F6833B9EFF306 /* Pods_TheMovieDB_TheMovieDBUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TheMovieDB_TheMovieDBUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		59B5BBB12D986ECEA48273BD /* Pods_TheMovieDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TheMovieDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -274,6 +278,7 @@
 			children = (
 				247B491E25B093B600B4F2F8 /* MoviesViewModel.swift */,
 				247B493A25B0D33A00B4F2F8 /* MovieDetailViewModel.swift */,
+				247B49A625B25D9600B4F2F8 /* SaveContentProtocol.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -630,6 +635,7 @@
 				247B48A125AFDF4D00B4F2F8 /* URLRequest+Extensions.swift in Sources */,
 				247B484725AF63ED00B4F2F8 /* TheMovieDB.xcdatamodeld in Sources */,
 				247B483F25AF63ED00B4F2F8 /* SceneDelegate.swift in Sources */,
+				247B49A725B25D9700B4F2F8 /* SaveContentProtocol.swift in Sources */,
 				247B493425B0D32700B4F2F8 /* MovieDetailViewController.swift in Sources */,
 				247B491F25B093B600B4F2F8 /* MoviesViewModel.swift in Sources */,
 				247B498425B209A800B4F2F8 /* Content+CoreDataProperties.swift in Sources */,
@@ -640,6 +646,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				247B49A825B25D9700B4F2F8 /* SaveContentProtocol.swift in Sources */,
 				247B497625B2082100B4F2F8 /* CoreDataStack.swift in Sources */,
 				247B498F25B20A6300B4F2F8 /* DataManager.swift in Sources */,
 				247B493525B0D32700B4F2F8 /* MovieDetailViewController.swift in Sources */,
@@ -672,6 +679,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				247B49A925B25D9700B4F2F8 /* SaveContentProtocol.swift in Sources */,
 				247B497725B2082100B4F2F8 /* CoreDataStack.swift in Sources */,
 				247B499025B20A6300B4F2F8 /* DataManager.swift in Sources */,
 				247B493625B0D32700B4F2F8 /* MovieDetailViewController.swift in Sources */,

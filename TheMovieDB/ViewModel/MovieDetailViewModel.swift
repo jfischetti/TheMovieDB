@@ -12,17 +12,19 @@ protocol MovieDetailViewModelProtocol {
     func getMovieDetail(by id: Int)
 }
 
-final class MovieDetailViewModel: MovieDetailViewModelProtocol {
+final class MovieDetailViewModel: MovieDetailViewModelProtocol, SaveContentProtocol {
 
     var movieDetail: Observable<MovieDetail>
     private let disposeBag = DisposeBag()
     private let movieAPI: TheMovieDBAPIProtocol
+    var dataManager: DataManager
 
     private let movieDetailSubject = PublishSubject<MovieDetail>()
 
-    init(withAPI movieAPI: TheMovieDBAPIProtocol) {
+    init(withAPI movieAPI: TheMovieDBAPIProtocol, dataManager: DataManager) {
         self.movieAPI = movieAPI
         self.movieDetail = movieDetailSubject.asObserver()
+        self.dataManager = dataManager
     }
 
     func getMovieDetail(by id: Int) {

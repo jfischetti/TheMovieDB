@@ -15,18 +15,14 @@ protocol MoviesViewModelProtocol {
     func getPopularTV()
     func getTopRatedTV()
     func searchMovies(with query: String)
-
-    func saveContent(content: ContentProtocol)
-    func isSavedContent(with id: Int) -> Bool
-    func deleteContent(content: ContentProtocol)
 }
 
-final class MoviesViewModel: MoviesViewModelProtocol {
+final class MoviesViewModel: MoviesViewModelProtocol, SaveContentProtocol {
 
     var contents: Observable<[ContentProtocol]>
     private let disposeBag = DisposeBag()
     private let movieAPI: TheMovieDBAPIProtocol
-    private let dataManager: DataManager
+    var dataManager: DataManager
 
     private let contentsSubject = PublishSubject<[ContentProtocol]>()
 
@@ -135,17 +131,5 @@ final class MoviesViewModel: MoviesViewModelProtocol {
                 print("Error: \(error)")
             })
             .disposed(by: disposeBag)
-    }
-
-    func saveContent(content: ContentProtocol) {
-        self.dataManager.addContent(content: content)
-    }
-
-    func isSavedContent(with id: Int) -> Bool {
-        return self.dataManager.getContent(by: id) != nil
-    }
-
-    func deleteContent(content: ContentProtocol) {
-        self.dataManager.removeContent(content: content)
     }
 }
