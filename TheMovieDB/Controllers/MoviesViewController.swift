@@ -98,7 +98,8 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
                 if let url = content.posterUrl(), let data = try? Data(contentsOf: url){
                     cell.imageView.image = UIImage(data: data)
                 } else {
-                    cell.imageView.image = UIImage(named: "outline_image_black_48pt")
+                    // default to the title
+                    cell.titleLbl.text = content.title
                 }
             } else {
                 // check cache for the image
@@ -106,8 +107,8 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
                 if let image = ImageCacheManager.shared.getCachedImage(by: id) {
                     cell.imageView.image = image
                 } else {
-                    // otherwise use default
-                    cell.imageView.image = UIImage(named: "outline_image_black_48pt")
+                    // otherwise default to the title
+                    cell.titleLbl.text = content.title
                 }
             }
 

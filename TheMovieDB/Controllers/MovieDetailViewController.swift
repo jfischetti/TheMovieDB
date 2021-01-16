@@ -63,7 +63,7 @@ class MovieDetailViewController : UIViewController {
         if let isFavorite = isFavorite, isFavorite == true {
             self.saveImage.image = filledStar.image(with: .yellow)
         } else {
-            self.saveImage.image = emptyStar.image(with: .black)
+            self.saveImage.image = emptyStar.image(with: .white)
         }
 
         self.saveImage.isUserInteractionEnabled = true
@@ -73,7 +73,7 @@ class MovieDetailViewController : UIViewController {
 
             isFavorite = self.viewModel?.isFavoriteContent(content: content)
             if let isFavorite = isFavorite, isFavorite == true {
-                self.saveImage.image = emptyStar.image(with: .black)
+                self.saveImage.image = emptyStar.image(with: .white)
                 self.viewModel?.unFavoriteContent(content: content)
             } else {
                 self.saveImage.image = filledStar.image(with: .yellow)
@@ -87,12 +87,12 @@ class MovieDetailViewController : UIViewController {
         if let url = movieDetail.posterUrl(), let data = try? Data(contentsOf: url) {
             self.imageView.image = UIImage(data: data)
         } else {
-            self.imageView.image = UIImage(named: "outline_image_black_48pt")
+            self.imageView.image = UIImage(named: "empty")
         }
 
         self.titleLbl.text = movieDetail.title
         self.runtimeLbl.text = movieDetail.runtimeString()
-        self.ratingLbl.text = "Rating: \(movieDetail.voteAverage ?? 0)"
+        self.ratingLbl.text = "Rating: \(movieDetail.voteAverage ?? 0)/10"
 
         if let releaseDate = movieDetail.releaseDate {
             self.releaseDateLbl.text = "Release Date: " + releaseDate
