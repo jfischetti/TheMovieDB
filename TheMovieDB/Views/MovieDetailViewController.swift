@@ -21,7 +21,6 @@ class MovieDetailViewController : UIViewController {
     @IBOutlet weak var titleLbl: UILabel!
     @IBOutlet weak var runtimeLbl: UILabel!
     @IBOutlet weak var ratingLbl: UILabel!
-    @IBOutlet weak var popularityLbl: UILabel!
     @IBOutlet weak var releaseDateLbl: UILabel!
     @IBOutlet weak var overviewLbl: UILabel!
 
@@ -41,7 +40,6 @@ class MovieDetailViewController : UIViewController {
         self.titleLbl.text = ""
         self.runtimeLbl.text = ""
         self.ratingLbl.text = ""
-        self.popularityLbl.text = ""
         self.releaseDateLbl.text = ""
         self.overviewLbl.text = ""
     }
@@ -95,7 +93,6 @@ class MovieDetailViewController : UIViewController {
         self.titleLbl.text = movieDetail.title
         self.runtimeLbl.text = movieDetail.runtimeString()
         self.ratingLbl.text = "Rating: \(movieDetail.voteAverage ?? 0)"
-        self.popularityLbl.text = "Popularity: \(movieDetail.popularity ?? 0)"
 
         if let releaseDate = movieDetail.releaseDate {
             self.releaseDateLbl.text = "Release Date: " + releaseDate

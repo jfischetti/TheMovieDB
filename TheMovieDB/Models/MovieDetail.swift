@@ -14,7 +14,6 @@ struct MovieDetail: Decodable, ContentProtocol {
     let overview: String?
     let posterPath: String?
     let voteAverage: Decimal?
-    let popularity: Decimal?
     let runtime: Int?
     let releaseDate: String?
 
@@ -38,7 +37,7 @@ struct MovieDetail: Decodable, ContentProtocol {
     }
 
     enum CodingKeys: String, CodingKey {
-        case id, title, overview, popularity, runtime
+        case id, title, overview, runtime
         case posterPath = "poster_path"
         case voteAverage = "vote_average"
         case releaseDate = "release_date"
