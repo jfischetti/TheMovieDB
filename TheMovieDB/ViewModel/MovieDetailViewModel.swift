@@ -12,7 +12,7 @@ protocol MovieDetailViewModelProtocol {
     func getMovieDetail(by id: Int)
 }
 
-final class MovieDetailViewModel: MovieDetailViewModelProtocol, SaveContentProtocol {
+final class MovieDetailViewModel: MovieDetailViewModelProtocol, FavoriteContentProtocol {
 
     var movieDetail: Observable<MovieDetail>
     private let disposeBag = DisposeBag()

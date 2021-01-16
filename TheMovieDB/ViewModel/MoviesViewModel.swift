@@ -9,6 +9,7 @@ import RxSwift
 
 protocol MoviesViewModelProtocol {
     var contents: Observable<[ContentProtocol]> { get }
+    func lastFeaturedCategory() -> ContentType?
     func getTopRatedMovies()
     func getNowPlayingMovies()
     func getPopularMovies()
@@ -17,7 +18,7 @@ protocol MoviesViewModelProtocol {
     func searchMovies(with query: String)
 }
 
-final class MoviesViewModel: MoviesViewModelProtocol, SaveContentProtocol {
+final class MoviesViewModel: MoviesViewModelProtocol, FavoriteContentProtocol {
 
     var contents: Observable<[ContentProtocol]>
     private let disposeBag = DisposeBag()
@@ -32,7 +33,14 @@ final class MoviesViewModel: MoviesViewModelProtocol, SaveContentProtocol {
         self.dataManager = dataManager
     }
 
+    func lastFeaturedCategory() -> ContentType? {
+        let cachedCategory = self.dataManager.getCachedFeatureCategory()
+
+        return cachedCategory.0
+    }
+
     func getTopRatedMovies() {
+
         movieAPI.getTopRatedMovies()
             .retry(3)
             .catch {
@@ -41,6 +49,7 @@ final class MoviesViewModel: MoviesViewModelProtocol, SaveContentProtocol {
             }
             .subscribe(onNext: { [weak self] result in
                 if let result = result {
+                    self?.dataManager.cacheFeatureCategory(contentType: .topRatedMovies, with: result)
                     self?.contentsSubject.onNext(result)
                 }
             }, onError: { error in
@@ -50,6 +59,7 @@ final class MoviesViewModel: MoviesViewModelProtocol, SaveContentProtocol {
     }
 
     func getNowPlayingMovies() {
+
         movieAPI.getNowPlayingMovies()
             .retry(3)
             .catch {
@@ -58,6 +68,7 @@ final class MoviesViewModel: MoviesViewModelProtocol, SaveContentProtocol {
             }
             .subscribe(onNext: { [weak self] result in
                 if let result = result {
+                    self?.dataManager.cacheFeatureCategory(contentType: .nowPlayingMovies, with: result)
                     self?.contentsSubject.onNext(result)
                 }
             }, onError: { error in
@@ -67,6 +78,7 @@ final class MoviesViewModel: MoviesViewModelProtocol, SaveContentProtocol {
     }
 
     func getPopularMovies() {
+
         movieAPI.getPopularMovies()            .retry(3)
             .catch {
                 print($0.localizedDescription)
@@ -74,6 +86,7 @@ final class MoviesViewModel: MoviesViewModelProtocol, SaveContentProtocol {
             }
             .subscribe(onNext: { [weak self] result in
                 if let result = result {
+                    self?.dataManager.cacheFeatureCategory(contentType: .popularMovies, with: result)
                     self?.contentsSubject.onNext(result)
                 }
             }, onError: { error in
@@ -83,6 +96,7 @@ final class MoviesViewModel: MoviesViewModelProtocol, SaveContentProtocol {
     }
 
     func getPopularTV() {
+
         movieAPI.getPopularTV()
             .retry(3)
             .catch {
@@ -91,6 +105,7 @@ final class MoviesViewModel: MoviesViewModelProtocol, SaveContentProtocol {
             }
             .subscribe(onNext: { [weak self] result in
                 if let result = result {
+                    self?.dataManager.cacheFeatureCategory(contentType: .popularTV, with: result)
                     self?.contentsSubject.onNext(result)
                 }
             }, onError: { error in
@@ -100,6 +115,7 @@ final class MoviesViewModel: MoviesViewModelProtocol, SaveContentProtocol {
     }
 
     func getTopRatedTV() {
+
         movieAPI.getTopRatedTV()
             .retry(3)
             .catch {
@@ -108,6 +124,7 @@ final class MoviesViewModel: MoviesViewModelProtocol, SaveContentProtocol {
             }
             .subscribe(onNext: { [weak self] result in
                 if let result = result {
+                    self?.dataManager.cacheFeatureCategory(contentType: .topRatedTv, with: result)
                     self?.contentsSubject.onNext(result)
                 }
             }, onError: { error in

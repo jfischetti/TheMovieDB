@@ -90,9 +90,9 @@
 		247B49A025B2284700B4F2F8 /* String+emojiToImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247B499F25B2284600B4F2F8 /* String+emojiToImage.swift */; };
 		247B49A125B2284700B4F2F8 /* String+emojiToImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247B499F25B2284600B4F2F8 /* String+emojiToImage.swift */; };
 		247B49A225B2284700B4F2F8 /* String+emojiToImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247B499F25B2284600B4F2F8 /* String+emojiToImage.swift */; };
-		247B49A725B25D9700B4F2F8 /* SaveContentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247B49A625B25D9600B4F2F8 /* SaveContentProtocol.swift */; };
-		247B49A825B25D9700B4F2F8 /* SaveContentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247B49A625B25D9600B4F2F8 /* SaveContentProtocol.swift */; };
-		247B49A925B25D9700B4F2F8 /* SaveContentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247B49A625B25D9600B4F2F8 /* SaveContentProtocol.swift */; };
+		247B49A725B25D9700B4F2F8 /* FavoriteContentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247B49A625B25D9600B4F2F8 /* FavoriteContentProtocol.swift */; };
+		247B49A825B25D9700B4F2F8 /* FavoriteContentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247B49A625B25D9600B4F2F8 /* FavoriteContentProtocol.swift */; };
+		247B49A925B25D9700B4F2F8 /* FavoriteContentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247B49A625B25D9600B4F2F8 /* FavoriteContentProtocol.swift */; };
 		247B49AE25B26D4E00B4F2F8 /* TVDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247B49AD25B26D4E00B4F2F8 /* TVDetailViewController.swift */; };
 		247B49AF25B26D4E00B4F2F8 /* TVDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247B49AD25B26D4E00B4F2F8 /* TVDetailViewController.swift */; };
 		247B49B025B26D4E00B4F2F8 /* TVDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247B49AD25B26D4E00B4F2F8 /* TVDetailViewController.swift */; };
@@ -162,7 +162,7 @@
 		247B498025B209A800B4F2F8 /* Content+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Content+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		247B498D25B20A6300B4F2F8 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		247B499F25B2284600B4F2F8 /* String+emojiToImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+emojiToImage.swift"; sourceTree = "<group>"; };
-		247B49A625B25D9600B4F2F8 /* SaveContentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveContentProtocol.swift; sourceTree = "<group>"; };
+		247B49A625B25D9600B4F2F8 /* FavoriteContentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteContentProtocol.swift; sourceTree = "<group>"; };
 		247B49AD25B26D4E00B4F2F8 /* TVDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVDetailViewController.swift; sourceTree = "<group>"; };
 		247B49B425B27EBE00B4F2F8 /* TVDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVDetailViewModel.swift; sourceTree = "<group>"; };
 		2DBBEB250489DB1DB13AD994 /* Pods-TheMovieDB-TheMovieDBUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheMovieDB-TheMovieDBUITests.debug.xcconfig"; path = "Target Support Files/Pods-TheMovieDB-TheMovieDBUITests/Pods-TheMovieDB-TheMovieDBUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -287,7 +287,7 @@
 			children = (
 				247B491E25B093B600B4F2F8 /* MoviesViewModel.swift */,
 				247B493A25B0D33A00B4F2F8 /* MovieDetailViewModel.swift */,
-				247B49A625B25D9600B4F2F8 /* SaveContentProtocol.swift */,
+				247B49A625B25D9600B4F2F8 /* FavoriteContentProtocol.swift */,
 				247B49B425B27EBE00B4F2F8 /* TVDetailViewModel.swift */,
 			);
 			path = ViewModel;
@@ -647,7 +647,7 @@
 				247B48A125AFDF4D00B4F2F8 /* URLRequest+Extensions.swift in Sources */,
 				247B484725AF63ED00B4F2F8 /* TheMovieDB.xcdatamodeld in Sources */,
 				247B483F25AF63ED00B4F2F8 /* SceneDelegate.swift in Sources */,
-				247B49A725B25D9700B4F2F8 /* SaveContentProtocol.swift in Sources */,
+				247B49A725B25D9700B4F2F8 /* FavoriteContentProtocol.swift in Sources */,
 				247B493425B0D32700B4F2F8 /* MovieDetailViewController.swift in Sources */,
 				247B491F25B093B600B4F2F8 /* MoviesViewModel.swift in Sources */,
 				247B498425B209A800B4F2F8 /* Content+CoreDataProperties.swift in Sources */,
@@ -658,7 +658,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				247B49A825B25D9700B4F2F8 /* SaveContentProtocol.swift in Sources */,
+				247B49A825B25D9700B4F2F8 /* FavoriteContentProtocol.swift in Sources */,
 				247B497625B2082100B4F2F8 /* CoreDataStack.swift in Sources */,
 				247B498F25B20A6300B4F2F8 /* DataManager.swift in Sources */,
 				247B493525B0D32700B4F2F8 /* MovieDetailViewController.swift in Sources */,
@@ -693,7 +693,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				247B49A925B25D9700B4F2F8 /* SaveContentProtocol.swift in Sources */,
+				247B49A925B25D9700B4F2F8 /* FavoriteContentProtocol.swift in Sources */,
 				247B497725B2082100B4F2F8 /* CoreDataStack.swift in Sources */,
 				247B499025B20A6300B4F2F8 /* DataManager.swift in Sources */,
 				247B493625B0D32700B4F2F8 /* MovieDetailViewController.swift in Sources */,

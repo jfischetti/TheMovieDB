@@ -11,9 +11,15 @@ protocol DataManager {
 
     func getAllContents() -> [ContentProtocol]
 
-    func addContent(content: ContentProtocol)
+    func upsertContent(content: ContentProtocol, with isFavorite: Bool?, for contentType: ContentType?)
 
     func removeContent(content: ContentProtocol)
 
     func getContent(by id: Int) -> ContentProtocol?
+
+    func isFavoriteContent(content: ContentProtocol) -> Bool
+
+    func cacheFeatureCategory(contentType: ContentType, with contents: [ContentProtocol])
+
+    func getCachedFeatureCategory() -> (ContentType?, [ContentProtocol]?)
 }

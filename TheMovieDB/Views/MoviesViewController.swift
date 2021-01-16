@@ -14,7 +14,9 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
 
     private let disposeBag = DisposeBag()
     var networkingManager = NetworkManager()
-    var viewModel: (MoviesViewModelProtocol & SaveContentProtocol)?
+    var viewModel: (MoviesViewModelProtocol & FavoriteContentProtocol)?
+
+    var isFirstAppLaunch = true
 
     @IBOutlet weak var collectionView: UICollectionView!
     //var searchBar: UISearchBar?
@@ -29,9 +31,20 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
 
     override func viewWillAppear(_ animated: Bool) {
 
-        // when hitting back, make sure to reload the view to fix saved movies
-        if let title = self.navigationItem.title, let contentType = ContentType(rawValue: title) {
-            displayFeatureCategory(contentType: contentType)
+        if isFirstAppLaunch {
+            isFirstAppLaunch = false
+            // display the last viewed category
+            if let lastCategory = self.viewModel?.lastFeaturedCategory() {
+                displayFeatureCategory(contentType: lastCategory)
+            } else {
+                // there is no last category so show the default view
+                displayFeatureCategory(contentType: .nowPlayingMovies)
+            }
+        } else {
+            // when hitting back, make sure to reload the view to fix favorited movies
+            if let title = self.navigationItem.title, let contentType = ContentType(rawValue: title) {
+                displayFeatureCategory(contentType: contentType)
+            }
         }
     }
 
@@ -80,8 +93,8 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
             let emptyStar = "☆"
             let filledStar = "★"
 
-            var isSaved = self.viewModel?.isSavedContent(with: content.id!)
-            if let isSaved = isSaved, isSaved == true {
+            var isFavorite = self.viewModel?.isFavoriteContent(content: content)
+            if let isFavorite = isFavorite, isFavorite == true {
                 cell.saveImage.image = filledStar.image(with: .yellow)
             } else {
                 cell.saveImage.image = emptyStar.image(with: .black)
@@ -93,13 +106,13 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
             tapGesture.rx.event.bind(onNext: { recognizer in
                 print("tapped star on \(cell.title.text)")
 
-                isSaved = self.viewModel?.isSavedContent(with: content.id!)
-                if let isSaved = isSaved, isSaved == true {
+                isFavorite = self.viewModel?.isFavoriteContent(content: content )
+                if let isFavorite = isFavorite, isFavorite == true {
                     cell.saveImage.image = emptyStar.image(with: .black)
-                    self.viewModel?.deleteContent(content: content)
+                    self.viewModel?.unFavoriteContent(content: content)
                 } else {
                     cell.saveImage.image = filledStar.image(with: .yellow)
-                    self.viewModel?.saveContent(content: content)
+                    self.viewModel?.favoriteContent(content: content)
                 }
             })
             .disposed(by: self.disposeBag)
@@ -139,13 +152,20 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
         // bind search bar's scope bar selection
         navigationItem.searchController?.searchBar.rx.selectedScopeButtonIndex.subscribe(onNext: { [weak self] index in
             let contentType = ContentType(rawValue: (self?.navigationItem.searchController?.searchBar.scopeButtonTitles![index])!)
-            self?.displayFeatureCategory(contentType: contentType!)
+            if self?.isFirstAppLaunch == false {
+                // dont update on the initial binding
+                self?.displayFeatureCategory(contentType: contentType!)
+            }
         })
         .disposed(by: disposeBag)
     }
 
     func displayFeatureCategory(contentType: ContentType) {
+
+        // update navigation title to reflect content type
         self.navigationController?.navigationBar.topItem?.title = contentType.rawValue
+        // update scope bar to reflect content type
+        navigationItem.searchController?.searchBar.selectedScopeButtonIndex = ContentType.allCases.firstIndex(of: contentType)!
 
         switch contentType {
         case .nowPlayingMovies:

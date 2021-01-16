@@ -12,7 +12,7 @@ protocol TVDetailViewModelProtocol {
     func getTVDetail(by id: Int)
 }
 
-final class TVDetailViewModel: TVDetailViewModelProtocol, SaveContentProtocol {
+final class TVDetailViewModel: TVDetailViewModelProtocol, FavoriteContentProtocol {
 
     var tvDetail: Observable<TVDetail>
     private let disposeBag = DisposeBag()

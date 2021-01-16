@@ -13,7 +13,7 @@ class TVDetailViewController : UIViewController {
 
     private let disposeBag = DisposeBag()
     var networkingManager = NetworkManager()
-    var viewModel: (TVDetailViewModelProtocol & SaveContentProtocol)?
+    var viewModel: (TVDetailViewModelProtocol & FavoriteContentProtocol)?
     var contentID: Int?
 
     @IBOutlet weak var imageView: UIImageView!
@@ -62,8 +62,8 @@ class TVDetailViewController : UIViewController {
         let emptyStar = "☆"
         let filledStar = "★"
 
-        var isSaved = self.viewModel?.isSavedContent(with: content.id!)
-        if let isSaved = isSaved, isSaved == true {
+        var isFavorite = self.viewModel?.isFavoriteContent(content: content)
+        if let isFavorite = isFavorite, isFavorite == true {
             self.saveImage.image = filledStar.image(with: .yellow)
         } else {
             self.saveImage.image = emptyStar.image(with: .black)
@@ -74,13 +74,13 @@ class TVDetailViewController : UIViewController {
         self.saveImage.addGestureRecognizer(tapGesture)
         tapGesture.rx.event.bind(onNext: { recognizer in
 
-            isSaved = self.viewModel?.isSavedContent(with: content.id!)
-            if let isSaved = isSaved, isSaved == true {
+            isFavorite = self.viewModel?.isFavoriteContent(content: content)
+            if let isFavorite = isFavorite, isFavorite == true {
                 self.saveImage.image = emptyStar.image(with: .black)
-                self.viewModel?.deleteContent(content: content)
+                self.viewModel?.unFavoriteContent(content: content)
             } else {
                 self.saveImage.image = filledStar.image(with: .yellow)
-                self.viewModel?.saveContent(content: content)
+                self.viewModel?.favoriteContent(content: content)
             }
         })
         .disposed(by: self.disposeBag)
