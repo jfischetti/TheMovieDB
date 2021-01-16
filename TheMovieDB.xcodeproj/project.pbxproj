@@ -243,6 +243,7 @@
 		247B483B25AF63ED00B4F2F8 /* TheMovieDB */ = {
 			isa = PBXGroup;
 			children = (
+				2487886225B3792A00602FB5 /* Controllers */,
 				247B488725AFD2EA00B4F2F8 /* Network */,
 				247B488425AF98B600B4F2F8 /* Resources */,
 				247B488325AF985500B4F2F8 /* Storyboard */,
@@ -279,10 +280,7 @@
 		247B488025AF97CF00B4F2F8 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				247B491725B0926A00B4F2F8 /* MoviesViewController.swift */,
 				247B492525B0BA5B00B4F2F8 /* MovieCollectionViewCell.swift */,
-				247B493325B0D32700B4F2F8 /* MovieDetailViewController.swift */,
-				247B49AD25B26D4E00B4F2F8 /* TVDetailViewController.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -372,6 +370,16 @@
 				247B498025B209A800B4F2F8 /* Content+CoreDataProperties.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		2487886225B3792A00602FB5 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				247B491725B0926A00B4F2F8 /* MoviesViewController.swift */,
+				247B493325B0D32700B4F2F8 /* MovieDetailViewController.swift */,
+				247B49AD25B26D4E00B4F2F8 /* TVDetailViewController.swift */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 		BC9B0A4B2E2DD6F96652E9E5 /* Pods */ = {
