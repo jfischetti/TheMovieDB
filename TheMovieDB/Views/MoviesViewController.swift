@@ -25,25 +25,37 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
         super.viewDidLoad()
         self.viewModel = MoviesViewModel(withAPI: TheMovieDBAPI(networkingManager), dataManager: CoreDataStack())
 
+        // start monitoring for network connectivity issues
+        NetworkConnectivityManager.shared.startMonitoring()
+
         self.setupUI()
         self.setupBindings()
     }
 
     override func viewWillAppear(_ animated: Bool) {
 
-        if isFirstAppLaunch {
-            isFirstAppLaunch = false
-            // display the last viewed category
-            if let lastCategory = self.viewModel?.lastFeaturedCategory() {
-                displayFeatureCategory(contentType: lastCategory)
+        // check for network connectivity
+        if NetworkConnectivityManager.shared.isReachable {
+            if isFirstAppLaunch {
+                isFirstAppLaunch = false
+                // display the last viewed category on first launch
+                if let lastCategory = self.viewModel?.lastFeaturedCategory() {
+                    displayFeatureCategory(contentType: lastCategory)
+                } else {
+                    // there is no last category so show the default view
+                    displayFeatureCategory(contentType: .nowPlayingMovies)
+                }
             } else {
-                // there is no last category so show the default view
-                displayFeatureCategory(contentType: .nowPlayingMovies)
+                // when hitting back, make sure to reload the view to fix favorited movies
+                if let title = self.navigationItem.title, let contentType = ContentType(rawValue: title) {
+                    displayFeatureCategory(contentType: contentType)
+                }
             }
         } else {
-            // when hitting back, make sure to reload the view to fix favorited movies
-            if let title = self.navigationItem.title, let contentType = ContentType(rawValue: title) {
-                displayFeatureCategory(contentType: contentType)
+            // display cached data
+            if let lastCategory = self.viewModel?.lastFeaturedCategory() {
+                self.updateFeaturedCategoryUI(contentType: lastCategory)
+                self.viewModel?.getLastFeaturedCategoryCache()
             }
         }
     }
@@ -84,10 +96,23 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
 
             cell.title.text = content.title
 
-            if let url = content.posterUrl(), let data = try? Data(contentsOf: url){
-                cell.imageView.image = UIImage(data: data)
+            // check for network connectivity
+            if NetworkConnectivityManager.shared.isReachable {
+                // fetch poster image
+                if let url = content.posterUrl(), let data = try? Data(contentsOf: url){
+                    cell.imageView.image = UIImage(data: data)
+                } else {
+                    cell.imageView.image = UIImage(named: "outline_image_black_48pt")
+                }
             } else {
-                cell.imageView.image = UIImage(named: "outline_image_black_48pt")
+                // check cache for the image
+                let id = String(content.id!)
+                if let image = ImageCacheManager.shared.getCachedImage(by: id) {
+                    cell.imageView.image = image
+                } else {
+                    // otherwise use default
+                    cell.imageView.image = UIImage(named: "outline_image_black_48pt")
+                }
             }
 
             let emptyStar = "☆"
@@ -162,10 +187,7 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
 
     func displayFeatureCategory(contentType: ContentType) {
 
-        // update navigation title to reflect content type
-        self.navigationController?.navigationBar.topItem?.title = contentType.rawValue
-        // update scope bar to reflect content type
-        navigationItem.searchController?.searchBar.selectedScopeButtonIndex = ContentType.allCases.firstIndex(of: contentType)!
+        updateFeaturedCategoryUI(contentType: contentType)
 
         switch contentType {
         case .nowPlayingMovies:
@@ -179,5 +201,12 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
         case .topRatedTv:
             self.viewModel?.getTopRatedTV()
         }
+    }
+
+    func updateFeaturedCategoryUI(contentType: ContentType) {
+        // update navigation title to reflect content type
+        self.navigationController?.navigationBar.topItem?.title = contentType.rawValue
+        // update scope bar to reflect content type
+        navigationItem.searchController?.searchBar.selectedScopeButtonIndex = ContentType.allCases.firstIndex(of: contentType)!
     }
 }

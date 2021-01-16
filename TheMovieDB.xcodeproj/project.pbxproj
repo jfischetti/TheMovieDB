@@ -99,6 +99,9 @@
 		247B49B525B27EBF00B4F2F8 /* TVDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247B49B425B27EBE00B4F2F8 /* TVDetailViewModel.swift */; };
 		247B49B625B27EBF00B4F2F8 /* TVDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247B49B425B27EBE00B4F2F8 /* TVDetailViewModel.swift */; };
 		247B49B725B27EBF00B4F2F8 /* TVDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247B49B425B27EBE00B4F2F8 /* TVDetailViewModel.swift */; };
+		2487883B25B3593100602FB5 /* NetworkConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2487883A25B3593100602FB5 /* NetworkConnectivityManager.swift */; };
+		2487885D25B36AF300602FB5 /* ImageCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2487885C25B36AF300602FB5 /* ImageCacheManager.swift */; };
+		2487885E25B36AF300602FB5 /* ImageCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2487885C25B36AF300602FB5 /* ImageCacheManager.swift */; };
 		3A6B83B2021500FE121020D5 /* Pods_TheMovieDBTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1BDE248C9BAFBB042B3C4D5 /* Pods_TheMovieDBTests.framework */; };
 		3D67EFC726A83DE2CB172E0F /* Pods_TheMovieDB_TheMovieDBUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B0A97B1F62F6833B9EFF306 /* Pods_TheMovieDB_TheMovieDBUITests.framework */; };
 		C7703266D22EE0CF26A61297 /* Pods_TheMovieDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59B5BBB12D986ECEA48273BD /* Pods_TheMovieDB.framework */; };
@@ -165,6 +168,8 @@
 		247B49A625B25D9600B4F2F8 /* FavoriteContentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteContentProtocol.swift; sourceTree = "<group>"; };
 		247B49AD25B26D4E00B4F2F8 /* TVDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVDetailViewController.swift; sourceTree = "<group>"; };
 		247B49B425B27EBE00B4F2F8 /* TVDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVDetailViewModel.swift; sourceTree = "<group>"; };
+		2487883A25B3593100602FB5 /* NetworkConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkConnectivityManager.swift; sourceTree = "<group>"; };
+		2487885C25B36AF300602FB5 /* ImageCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheManager.swift; sourceTree = "<group>"; };
 		2DBBEB250489DB1DB13AD994 /* Pods-TheMovieDB-TheMovieDBUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheMovieDB-TheMovieDBUITests.debug.xcconfig"; path = "Target Support Files/Pods-TheMovieDB-TheMovieDBUITests/Pods-TheMovieDB-TheMovieDBUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		3B0A97B1F62F6833B9EFF306 /* Pods_TheMovieDB_TheMovieDBUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TheMovieDB_TheMovieDBUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		59B5BBB12D986ECEA48273BD /* Pods_TheMovieDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TheMovieDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -305,6 +310,7 @@
 				247B495525B0DF8900B4F2F8 /* TVResults.swift */,
 				247B495C25B1254200B4F2F8 /* ContentProtocol.swift */,
 				247B496925B1EB8F00B4F2F8 /* ContentType.swift */,
+				2487885C25B36AF300602FB5 /* ImageCacheManager.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -343,6 +349,7 @@
 				247B489925AFD8E100B4F2F8 /* NetworkConstants.swift */,
 				247B48A025AFDF4D00B4F2F8 /* URLRequest+Extensions.swift */,
 				247B48A725AFE36F00B4F2F8 /* TheMovieDBAPI.swift */,
+				2487883A25B3593100602FB5 /* NetworkConnectivityManager.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -621,9 +628,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2487883B25B3593100602FB5 /* NetworkConnectivityManager.swift in Sources */,
 				247B492625B0BA5B00B4F2F8 /* MovieCollectionViewCell.swift in Sources */,
 				247B497525B2082100B4F2F8 /* CoreDataStack.swift in Sources */,
 				247B494225B0DB1E00B4F2F8 /* Date+TMDBFormat.swift in Sources */,
+				2487885D25B36AF300602FB5 /* ImageCacheManager.swift in Sources */,
 				247B493B25B0D33A00B4F2F8 /* MovieDetailViewModel.swift in Sources */,
 				247B495D25B1254300B4F2F8 /* ContentProtocol.swift in Sources */,
 				247B498125B209A800B4F2F8 /* Content+CoreDataClass.swift in Sources */,
@@ -677,6 +686,7 @@
 				247B489425AFD48F00B4F2F8 /* NetworkError.swift in Sources */,
 				247B492025B093B600B4F2F8 /* MoviesViewModel.swift in Sources */,
 				247B495025B0DF1C00B4F2F8 /* MovieResults.swift in Sources */,
+				2487885E25B36AF300602FB5 /* ImageCacheManager.swift in Sources */,
 				247B488A25AFD35E00B4F2F8 /* NetworkManager.swift in Sources */,
 				247B48E925AFF25300B4F2F8 /* MovieDetail.swift in Sources */,
 				247B495E25B1254300B4F2F8 /* ContentProtocol.swift in Sources */,

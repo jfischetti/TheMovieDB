@@ -10,6 +10,7 @@ import RxSwift
 protocol MoviesViewModelProtocol {
     var contents: Observable<[ContentProtocol]> { get }
     func lastFeaturedCategory() -> ContentType?
+    func getLastFeaturedCategoryCache()
     func getTopRatedMovies()
     func getNowPlayingMovies()
     func getPopularMovies()
@@ -37,6 +38,12 @@ final class MoviesViewModel: MoviesViewModelProtocol, FavoriteContentProtocol {
         let cachedCategory = self.dataManager.getCachedFeatureCategory()
 
         return cachedCategory.0
+    }
+
+    func getLastFeaturedCategoryCache() {
+        let cachedCategory = self.dataManager.getCachedFeatureCategory()
+        let cachedContents = cachedCategory.1 ?? [ContentProtocol]()
+        self.contentsSubject.onNext(cachedContents)
     }
 
     func getTopRatedMovies() {

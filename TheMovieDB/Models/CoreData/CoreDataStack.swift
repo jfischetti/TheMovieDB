@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreData
+import UIKit
 
 class CoreDataStack: DataManager {
 
@@ -93,27 +94,7 @@ class CoreDataStack: DataManager {
 
         return contents
     }
-/*
-    func addContent(content: ContentProtocol, with isFavorite: Bool?, for contentType: ContentType?) {
-        let entity = NSEntityDescription.entity(forEntityName: ContentEntityName, in: self.managedObjectContext)!
-        let coreDataContent = Content(entity: entity, insertInto: self.managedObjectContext)
 
-        coreDataContent.id = Int32(content.id!)
-        coreDataContent.title = content.title
-        coreDataContent.posterPath = content.posterPath
-        coreDataContent.type = content as? Movie != nil ? ContentEntityMovieType : ContentEntityTVType
-
-        // set content type if its passed in
-        coreDataContent.contentType = contentType?.rawValue
-
-        if let isFavorite = isFavorite {
-            // set favorite if its passed in
-            coreDataContent.favorite = isFavorite
-        }
-
-        self.saveMainContext()
-    }
-*/
     func upsertContent(content: ContentProtocol, with isFavorite: Bool?, for contentType: ContentType?)
     {
         var coreDataContent = getCoreDataContent(by: content.id!)
@@ -202,12 +183,25 @@ class CoreDataStack: DataManager {
         // cache new values
         contents.forEach { content in
             upsertContent(content: content, with: nil, for: contentType)
+
+            DispatchQueue.global(qos: .background).async {
+                // cache poster image
+                if let url = content.posterUrl(), let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
+                    let id = String(content.id!)
+                    ImageCacheManager.shared.cacheImage(image: image, with: id)
+                }
+            }
         }
     }
 
     func clearFeaturedCategoryCache() {
         let contents = getAllCoreDataContents()
         contents.forEach { content in
+
+            // delete any associated cached images
+            let id = String(content.id)
+            ImageCacheManager.shared.deleteImage(with: id)
+
             if let _ = content.contentType, content.favorite == false {
                 // delete cached content if its marked for a feature category and its not favorited
                 self.managedObjectContext.delete(content)
