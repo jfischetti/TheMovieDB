@@ -63,7 +63,7 @@ class MovieDetailViewController : UIViewController {
         if let isFavorite = isFavorite, isFavorite == true {
             self.saveImage.image = filledStar.image(with: .yellow)
         } else {
-            self.saveImage.image = emptyStar.image(with: .black)
+            self.saveImage.image = emptyStar.image(with: .white)
         }
 
         self.saveImage.isUserInteractionEnabled = true
@@ -73,10 +73,14 @@ class MovieDetailViewController : UIViewController {
 
             isFavorite = self.viewModel?.isFavoriteContent(content: content)
             if let isFavorite = isFavorite, isFavorite == true {
-                self.saveImage.image = emptyStar.image(with: .black)
+                UIView.transition(with: self.saveImage, duration: 1, options: .transitionFlipFromRight, animations: {
+                    self.saveImage.image = emptyStar.image(with: .white)
+                }, completion: nil)
                 self.viewModel?.unFavoriteContent(content: content)
             } else {
-                self.saveImage.image = filledStar.image(with: .yellow)
+                UIView.transition(with: self.saveImage, duration: 1, options: .transitionFlipFromRight, animations: {
+                    self.saveImage.image = filledStar.image(with: .yellow)
+                }, completion: nil)
                 self.viewModel?.favoriteContent(content: content)
             }
         })
@@ -87,12 +91,12 @@ class MovieDetailViewController : UIViewController {
         if let url = movieDetail.posterUrl(), let data = try? Data(contentsOf: url) {
             self.imageView.image = UIImage(data: data)
         } else {
-            self.imageView.image = UIImage(named: "outline_image_black_48pt")
+            self.imageView.image = UIImage(named: "empty")
         }
 
         self.titleLbl.text = movieDetail.title
         self.runtimeLbl.text = movieDetail.runtimeString()
-        self.ratingLbl.text = "Rating: \(movieDetail.voteAverage ?? 0)"
+        self.ratingLbl.text = "Rating: \(movieDetail.voteAverage ?? 0)/10"
 
         if let releaseDate = movieDetail.releaseDate {
             self.releaseDateLbl.text = "Release Date: " + releaseDate
@@ -100,7 +104,7 @@ class MovieDetailViewController : UIViewController {
             self.releaseDateLbl.text = ""
         }
 
-        self.overviewLbl.text = movieDetail.overview
+        self.overviewLbl.text = movieDetail.overview == nil || movieDetail.overview == "" ? "Not available." : movieDetail.overview
 
         setupTapToSaveButton(with: movieDetail)
     }

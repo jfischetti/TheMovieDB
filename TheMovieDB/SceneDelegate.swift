@@ -24,7 +24,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
 
+
+
+        // Customize the nav bar color
+        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).backgroundColor = .white
+
+        let appearance = UINavigationBarAppearance()
+        appearance.backgroundColor = .black
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+
         let navController = UINavigationController(rootViewController: vc)
+        navController.navigationBar.tintColor = .white
+        navController.navigationBar.standardAppearance = appearance
+        navController.navigationBar.compactAppearance = appearance
+        navController.navigationBar.scrollEdgeAppearance = appearance
+
         self.window?.rootViewController = navController
         self.window?.makeKeyAndVisible()
     }

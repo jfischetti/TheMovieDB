@@ -12,7 +12,7 @@ extension String {
     func image(with color: UIColor) -> UIImage? {
         let size = CGSize(width: 40, height: 40)
         UIGraphicsBeginImageContextWithOptions(size, false, 0)
-        UIColor.white.set()
+        UIColor.black.set()
         let rect = CGRect(origin: .zero, size: size)
         UIRectFill(CGRect(origin: .zero, size: size))
         (self as AnyObject).draw(in: rect, withAttributes: [.font: UIFont.systemFont(ofSize: 40), .foregroundColor: color])

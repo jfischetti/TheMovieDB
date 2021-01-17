@@ -19,7 +19,6 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
     var isFirstAppLaunch = true
 
     @IBOutlet weak var collectionView: UICollectionView!
-    //var searchBar: UISearchBar?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,29 +61,21 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
 
     private func setupUI() {
         // set search bar
-        /*
-        self.searchBar = UISearchBar()
-        self.searchBar?.delegate = self
-        self.searchBar?.placeholder = "Search movies"
-        self.searchBar?.showsCancelButton = false
-        self.navigationItem.titleView = searchBar
-         */
         let search = UISearchController(searchResultsController: nil)
-
-        //search.hidesNavigationBarDuringPresentation = false
         search.obscuresBackgroundDuringPresentation = false
         search.searchBar.placeholder = "Search movies"
-        //search.searchBar.showsScopeBar = true
+        search.searchBar.showsScopeBar = true
         search.searchBar.scopeButtonTitles = ContentType.allCases.map { $0.rawValue }
         let font = UIFont.systemFont(ofSize: 8)
-        search.searchBar.setScopeBarButtonTitleTextAttributes([NSAttributedString.Key.font: font], for: .normal)
+        search.searchBar.setScopeBarButtonTitleTextAttributes([NSAttributedString.Key.font: font, NSAttributedString.Key.foregroundColor: UIColor.white], for: .normal)
+        search.searchBar.setScopeBarButtonTitleTextAttributes([NSAttributedString.Key.font: font, NSAttributedString.Key.foregroundColor: UIColor.black], for: .selected)
         navigationItem.searchController = search
 
         // set layout for collection
         let layout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         let screenWidth = collectionView.bounds.size.width
-        layout.itemSize = CGSize(width: screenWidth / 2, height: screenWidth / 2)
+        layout.itemSize = CGSize(width: screenWidth / 3, height: 200)//screenWidth / 3)
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         collectionView.collectionViewLayout = layout
@@ -94,7 +85,12 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
         // bind collectionview datasource
         _ = viewModel?.contents.bind(to: collectionView.rx.items(cellIdentifier: "Cell", cellType: MovieCollectionViewCell.self) ) { index, content, cell in
 
-            cell.title.text = content.title
+            cell.layer.masksToBounds = true
+            cell.layer.cornerRadius = 5
+            cell.layer.borderWidth = 2
+            cell.layer.shadowOffset = CGSize(width: -1, height: 1)
+            let borderColor: UIColor = .black
+            cell.layer.borderColor = borderColor.cgColor
 
             // check for network connectivity
             if NetworkConnectivityManager.shared.isReachable {
@@ -102,7 +98,8 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
                 if let url = content.posterUrl(), let data = try? Data(contentsOf: url){
                     cell.imageView.image = UIImage(data: data)
                 } else {
-                    cell.imageView.image = UIImage(named: "outline_image_black_48pt")
+                    // default to the title
+                    cell.titleLbl.text = content.title
                 }
             } else {
                 // check cache for the image
@@ -110,8 +107,8 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
                 if let image = ImageCacheManager.shared.getCachedImage(by: id) {
                     cell.imageView.image = image
                 } else {
-                    // otherwise use default
-                    cell.imageView.image = UIImage(named: "outline_image_black_48pt")
+                    // otherwise default to the title
+                    cell.titleLbl.text = content.title
                 }
             }
 
@@ -122,21 +119,23 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
             if let isFavorite = isFavorite, isFavorite == true {
                 cell.saveImage.image = filledStar.image(with: .yellow)
             } else {
-                cell.saveImage.image = emptyStar.image(with: .black)
+                cell.saveImage.image = emptyStar.image(with: .white)
             }
 
             cell.saveImage.isUserInteractionEnabled = true
             let tapGesture = UITapGestureRecognizer()
             cell.saveImage.addGestureRecognizer(tapGesture)
             tapGesture.rx.event.bind(onNext: { recognizer in
-                print("tapped star on \(cell.title.text)")
-
                 isFavorite = self.viewModel?.isFavoriteContent(content: content )
                 if let isFavorite = isFavorite, isFavorite == true {
-                    cell.saveImage.image = emptyStar.image(with: .black)
+                    UIView.transition(with: cell.saveImage, duration: 1, options: .transitionFlipFromRight, animations: {
+                        cell.saveImage.image = emptyStar.image(with: .white)
+                    }, completion: nil)
                     self.viewModel?.unFavoriteContent(content: content)
                 } else {
-                    cell.saveImage.image = filledStar.image(with: .yellow)
+                    UIView.transition(with: cell.saveImage, duration: 1, options: .transitionFlipFromRight, animations: {
+                        cell.saveImage.image = filledStar.image(with: .yellow)
+                    }, completion: nil)
                     self.viewModel?.favoriteContent(content: content)
                 }
             })
@@ -167,9 +166,16 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
             if let query = query, query.count > 0 {
                 self.navigationController?.navigationBar.topItem?.title = ""
                 self.viewModel?.searchMovies(with: query)
-            } else {
-                // display last feature category
-                //self.viewModel?.getTopRatedMovies()
+            }
+        })
+        .disposed(by: disposeBag)
+
+        // bind search bar's cancel click
+        navigationItem.searchController?.searchBar.rx.cancelButtonClicked.subscribe(onNext: {
+            if let index = self.navigationItem.searchController?.searchBar.selectedScopeButtonIndex {
+                let selected = self.navigationItem.searchController?.searchBar.scopeButtonTitles![index]
+                let contentType = ContentType(rawValue: selected!)
+                self.displayFeatureCategory(contentType: contentType!)
             }
         })
         .disposed(by: disposeBag)

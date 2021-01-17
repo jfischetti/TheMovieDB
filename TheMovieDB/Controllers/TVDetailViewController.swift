@@ -66,7 +66,7 @@ class TVDetailViewController : UIViewController {
         if let isFavorite = isFavorite, isFavorite == true {
             self.saveImage.image = filledStar.image(with: .yellow)
         } else {
-            self.saveImage.image = emptyStar.image(with: .black)
+            self.saveImage.image = emptyStar.image(with: .white)
         }
 
         self.saveImage.isUserInteractionEnabled = true
@@ -76,10 +76,14 @@ class TVDetailViewController : UIViewController {
 
             isFavorite = self.viewModel?.isFavoriteContent(content: content)
             if let isFavorite = isFavorite, isFavorite == true {
-                self.saveImage.image = emptyStar.image(with: .black)
+                UIView.transition(with: self.saveImage, duration: 1, options: .transitionFlipFromRight, animations: {
+                    self.saveImage.image = emptyStar.image(with: .white)
+                }, completion: nil)
                 self.viewModel?.unFavoriteContent(content: content)
             } else {
-                self.saveImage.image = filledStar.image(with: .yellow)
+                UIView.transition(with: self.saveImage, duration: 1, options: .transitionFlipFromRight, animations: {
+                    self.saveImage.image = filledStar.image(with: .yellow)
+                }, completion: nil)
                 self.viewModel?.favoriteContent(content: content)
             }
         })
@@ -92,12 +96,12 @@ class TVDetailViewController : UIViewController {
         if let url = tvDetail.posterUrl(), let data = try? Data(contentsOf: url) {
             self.imageView.image = UIImage(data: data)
         } else {
-            self.imageView.image = UIImage(named: "outline_image_black_48pt")
+            self.imageView.image = UIImage(named: "empty")
         }
 
         self.titleLbl.text = tvDetail.title
-        self.ratingLbl.text = "Rating: \(tvDetail.voteAverage ?? 0)"
-        self.overviewLbl.text = tvDetail.overview
+        self.ratingLbl.text = "Rating: \(tvDetail.voteAverage ?? 0)/10"
+        self.overviewLbl.text = tvDetail.overview == nil || tvDetail.overview == "" ? "Not available." : tvDetail.overview
 
         if let firstAired = tvDetail.firstAired {
             self.firstAiredLbl.text = "First Aired: " + firstAired
