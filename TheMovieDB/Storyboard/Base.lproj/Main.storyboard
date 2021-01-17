@@ -220,7 +220,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="HiC-XX-Rz7">
-                                <rect key="frame" x="15" y="112" width="74" height="128"/>
+                                <rect key="frame" x="15" y="112" width="112" height="128"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="first aired date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Nk-GG-Gy5">
@@ -230,7 +230,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Information" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E6H-Zw-Rcu">
-                                <rect key="frame" x="15" y="250" width="100" height="24"/>
+                                <rect key="frame" x="15" y="250" width="379" height="24"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -266,14 +266,14 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="jXN-9r-8Wz">
-                                <rect key="frame" x="97" y="154" width="44" height="44"/>
+                                <rect key="frame" x="135" y="154" width="44" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="dVn-Ca-4Bl"/>
                                     <constraint firstAttribute="width" constant="44" id="mxj-zL-M2B"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LyP-h0-oV2">
-                                <rect key="frame" x="149" y="166.5" width="245" height="29"/>
+                                <rect key="frame" x="187" y="166.5" width="207" height="29"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -284,10 +284,11 @@
                         <constraints>
                             <constraint firstItem="Zhb-GY-215" firstAttribute="leading" secondItem="muP-0V-1Dz" secondAttribute="leading" constant="15" id="532-01-08n"/>
                             <constraint firstItem="jXN-9r-8Wz" firstAttribute="centerY" secondItem="HiC-XX-Rz7" secondAttribute="centerY" id="6Qe-aH-JyE"/>
+                            <constraint firstItem="LyP-h0-oV2" firstAttribute="width" secondItem="cZG-A2-8IJ" secondAttribute="width" multiplier="1:2" id="6ho-UA-l6J"/>
                             <constraint firstItem="LyP-h0-oV2" firstAttribute="leading" secondItem="jXN-9r-8Wz" secondAttribute="trailing" constant="8" symbolic="YES" id="89X-NS-FNy"/>
                             <constraint firstItem="r8U-cH-Ffq" firstAttribute="top" secondItem="4UH-Bb-xj4" secondAttribute="bottom" constant="5" id="94h-F1-4B5"/>
+                            <constraint firstItem="muP-0V-1Dz" firstAttribute="trailing" secondItem="E6H-Zw-Rcu" secondAttribute="trailing" constant="20" id="993-Co-JlR"/>
                             <constraint firstItem="muP-0V-1Dz" firstAttribute="trailing" secondItem="QjN-uM-INB" secondAttribute="trailing" constant="20" id="G7J-Oy-s56"/>
-                            <constraint firstItem="HiC-XX-Rz7" firstAttribute="width" secondItem="E6H-Zw-Rcu" secondAttribute="width" multiplier="0.740106" id="Hd2-Wn-aNa"/>
                             <constraint firstItem="jXN-9r-8Wz" firstAttribute="centerY" secondItem="LyP-h0-oV2" secondAttribute="centerY" constant="-5" id="OTc-23-wgl"/>
                             <constraint firstItem="muP-0V-1Dz" firstAttribute="trailing" secondItem="r8U-cH-Ffq" secondAttribute="trailing" constant="20" id="WpN-ey-0np"/>
                             <constraint firstItem="CYy-rD-pUO" firstAttribute="leading" secondItem="muP-0V-1Dz" secondAttribute="leading" constant="15" id="ZKp-Kb-WIa"/>
