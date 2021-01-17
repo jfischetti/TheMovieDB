@@ -126,13 +126,16 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
             let tapGesture = UITapGestureRecognizer()
             cell.saveImage.addGestureRecognizer(tapGesture)
             tapGesture.rx.event.bind(onNext: { recognizer in
-
                 isFavorite = self.viewModel?.isFavoriteContent(content: content )
                 if let isFavorite = isFavorite, isFavorite == true {
-                    cell.saveImage.image = emptyStar.image(with: .white)
+                    UIView.transition(with: cell.saveImage, duration: 1, options: .transitionFlipFromRight, animations: {
+                        cell.saveImage.image = emptyStar.image(with: .white)
+                    }, completion: nil)
                     self.viewModel?.unFavoriteContent(content: content)
                 } else {
-                    cell.saveImage.image = filledStar.image(with: .yellow)
+                    UIView.transition(with: cell.saveImage, duration: 1, options: .transitionFlipFromRight, animations: {
+                        cell.saveImage.image = filledStar.image(with: .yellow)
+                    }, completion: nil)
                     self.viewModel?.favoriteContent(content: content)
                 }
             })

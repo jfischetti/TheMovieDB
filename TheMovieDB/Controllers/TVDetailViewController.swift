@@ -76,10 +76,14 @@ class TVDetailViewController : UIViewController {
 
             isFavorite = self.viewModel?.isFavoriteContent(content: content)
             if let isFavorite = isFavorite, isFavorite == true {
-                self.saveImage.image = emptyStar.image(with: .white)
+                UIView.transition(with: self.saveImage, duration: 1, options: .transitionFlipFromRight, animations: {
+                    self.saveImage.image = emptyStar.image(with: .white)
+                }, completion: nil)
                 self.viewModel?.unFavoriteContent(content: content)
             } else {
-                self.saveImage.image = filledStar.image(with: .yellow)
+                UIView.transition(with: self.saveImage, duration: 1, options: .transitionFlipFromRight, animations: {
+                    self.saveImage.image = filledStar.image(with: .yellow)
+                }, completion: nil)
                 self.viewModel?.favoriteContent(content: content)
             }
         })
@@ -97,7 +101,7 @@ class TVDetailViewController : UIViewController {
 
         self.titleLbl.text = tvDetail.title
         self.ratingLbl.text = "Rating: \(tvDetail.voteAverage ?? 0)/10"
-        self.overviewLbl.text = tvDetail.overview
+        self.overviewLbl.text = tvDetail.overview == nil || tvDetail.overview == "" ? "Not available." : tvDetail.overview
 
         if let firstAired = tvDetail.firstAired {
             self.firstAiredLbl.text = "First Aired: " + firstAired
