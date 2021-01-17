@@ -170,6 +170,16 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
         })
         .disposed(by: disposeBag)
 
+        // bind search bar's cancel click
+        navigationItem.searchController?.searchBar.rx.cancelButtonClicked.subscribe(onNext: {
+            if let index = self.navigationItem.searchController?.searchBar.selectedScopeButtonIndex {
+                let selected = self.navigationItem.searchController?.searchBar.scopeButtonTitles![index]
+                let contentType = ContentType(rawValue: selected!)
+                self.displayFeatureCategory(contentType: contentType!)
+            }
+        })
+        .disposed(by: disposeBag)
+
         // bind search bar's scope bar selection
         navigationItem.searchController?.searchBar.rx.selectedScopeButtonIndex.subscribe(onNext: { [weak self] index in
             let contentType = ContentType(rawValue: (self?.navigationItem.searchController?.searchBar.scopeButtonTitles![index])!)
