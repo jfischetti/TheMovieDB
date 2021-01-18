@@ -20,15 +20,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         self.window = UIWindow(windowScene: windowScene)
 
+        // Instantiate initial view controller
         guard let vc = UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(identifier: "MoviesViewController") as? MoviesViewController else {
             return
         }
 
 
-
-        // Customize the nav bar color
+        // Customize the search bar
         UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).backgroundColor = .white
 
+        // Customize the nav bar color
         let appearance = UINavigationBarAppearance()
         appearance.backgroundColor = .black
         appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
@@ -40,6 +41,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         navController.navigationBar.compactAppearance = appearance
         navController.navigationBar.scrollEdgeAppearance = appearance
 
+        // show the view
         self.window?.rootViewController = navController
         self.window?.makeKeyAndVisible()
     }

@@ -21,7 +21,11 @@ extension URLRequest {
         return Observable.just(resource.url)
             .flatMap { url -> Observable<(response: HTTPURLResponse, data: Data)> in
                 let request = URLRequest(url: self.loadURL(resource: resource) ?? url)
-                return URLSession.shared.rx.response(request: request)
+                let config = URLSessionConfiguration.default
+                config.requestCachePolicy = .reloadIgnoringLocalCacheData
+                config.urlCache = nil
+                let session = URLSession(configuration: config)
+                return session.rx.response(request: request)
             }.map { response, data -> T in
 
                 if 200 ..< 300 ~= response.statusCode {

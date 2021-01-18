@@ -55,7 +55,7 @@ final class MoviesViewModel: MoviesViewModelProtocol, FavoriteContentProtocol {
                 return Observable.just([])
             }
             .subscribe(onNext: { [weak self] result in
-                if let result = result {
+                if let result = result, result.count > 0 {
                     self?.dataManager.cacheFeatureCategory(contentType: .topRatedMovies, with: result)
                     self?.contentsSubject.onNext(result)
                 }
@@ -74,7 +74,7 @@ final class MoviesViewModel: MoviesViewModelProtocol, FavoriteContentProtocol {
                 return Observable.just([])
             }
             .subscribe(onNext: { [weak self] result in
-                if let result = result {
+                if let result = result, result.count > 0 {
                     self?.dataManager.cacheFeatureCategory(contentType: .nowPlayingMovies, with: result)
                     self?.contentsSubject.onNext(result)
                 }
@@ -86,13 +86,14 @@ final class MoviesViewModel: MoviesViewModelProtocol, FavoriteContentProtocol {
 
     func getPopularMovies() {
 
-        movieAPI.getPopularMovies()            .retry(3)
+        movieAPI.getPopularMovies()
+            .retry(3)
             .catch {
                 print($0.localizedDescription)
                 return Observable.just([])
             }
             .subscribe(onNext: { [weak self] result in
-                if let result = result {
+                if let result = result, result.count > 0 {
                     self?.dataManager.cacheFeatureCategory(contentType: .popularMovies, with: result)
                     self?.contentsSubject.onNext(result)
                 }
@@ -111,7 +112,7 @@ final class MoviesViewModel: MoviesViewModelProtocol, FavoriteContentProtocol {
                 return Observable.just([])
             }
             .subscribe(onNext: { [weak self] result in
-                if let result = result {
+                if let result = result, result.count > 0 {
                     self?.dataManager.cacheFeatureCategory(contentType: .popularTV, with: result)
                     self?.contentsSubject.onNext(result)
                 }
@@ -130,7 +131,7 @@ final class MoviesViewModel: MoviesViewModelProtocol, FavoriteContentProtocol {
                 return Observable.just([])
             }
             .subscribe(onNext: { [weak self] result in
-                if let result = result {
+                if let result = result, result.count > 0 {
                     self?.dataManager.cacheFeatureCategory(contentType: .topRatedTv, with: result)
                     self?.contentsSubject.onNext(result)
                 }

@@ -7,25 +7,45 @@
 
 import Foundation
 import Network
+import RxSwift
 
 class NetworkConnectivityManager {
 
-    static let shared = NetworkConnectivityManager()
-
     let monitor = NWPathMonitor()
+    private var isMonitoring = false
     private var status: NWPath.Status = .requiresConnection
-    var isReachable: Bool { status == .satisfied }
+    let isReachable: BehaviorSubject<Bool>
+
+    init() {
+        isReachable = BehaviorSubject<Bool>(value: true)
+    }
 
     func startMonitoring() {
-        monitor.pathUpdateHandler = { [weak self] path in
-            self?.status = path.status
-        }
+        if isMonitoring == false {
+            isMonitoring = true
 
-        let queue = DispatchQueue(label: "NetworkMonitor")
-        monitor.start(queue: queue)
+            //reset status
+            status = .requiresConnection
+
+            monitor.pathUpdateHandler = { [weak self] path in
+                print("Connection status changed from \(self!.status) to \(path.status)")
+                if let status = self?.status, status != path.status {
+                    DispatchQueue.main.async {
+                        print("Sending status change!")
+                        self?.isReachable.onNext(path.status == .satisfied)
+                    }
+                }
+
+                self?.status = path.status
+            }
+
+            let queue = DispatchQueue(label: "NetworkMonitor")
+            monitor.start(queue: queue)
+        }
     }
 
     func stopMonitoring() {
+        isMonitoring = false
         monitor.cancel()
     }
 }

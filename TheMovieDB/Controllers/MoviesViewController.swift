@@ -14,6 +14,7 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
 
     private let disposeBag = DisposeBag()
     var networkingManager = NetworkManager()
+    var networkConnectivityManager = NetworkConnectivityManager()
     var viewModel: (MoviesViewModelProtocol & FavoriteContentProtocol)?
 
     var isFirstAppLaunch = true
@@ -24,43 +25,39 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
         super.viewDidLoad()
         self.viewModel = MoviesViewModel(withAPI: TheMovieDBAPI(networkingManager), dataManager: CoreDataStack())
 
-        // start monitoring for network connectivity issues
-        NetworkConnectivityManager.shared.startMonitoring()
-
         self.setupUI()
         self.setupBindings()
     }
 
     override func viewWillAppear(_ animated: Bool) {
 
-        // check for network connectivity
-        if NetworkConnectivityManager.shared.isReachable {
-            if isFirstAppLaunch {
-                isFirstAppLaunch = false
-                // display the last viewed category on first launch
-                if let lastCategory = self.viewModel?.lastFeaturedCategory() {
-                    displayFeatureCategory(contentType: lastCategory)
-                } else {
-                    // there is no last category so show the default view
-                    displayFeatureCategory(contentType: .nowPlayingMovies)
-                }
-            } else {
-                // when hitting back, make sure to reload the view to fix favorited movies
-                if let title = self.navigationItem.title, let contentType = ContentType(rawValue: title) {
-                    displayFeatureCategory(contentType: contentType)
-                }
-            }
-        } else {
-            // display cached data
+        // restart network connectivity monitoring
+        networkConnectivityManager.startMonitoring()
+
+        if isFirstAppLaunch {
+            isFirstAppLaunch = false
+
             if let lastCategory = self.viewModel?.lastFeaturedCategory() {
-                self.updateFeaturedCategoryUI(contentType: lastCategory)
-                self.viewModel?.getLastFeaturedCategoryCache()
+                displayFeatureCategory(contentType: lastCategory)
+            } else {
+                // there is no last category so show the default view
+                displayFeatureCategory(contentType: .nowPlayingMovies)
+            }
+        } else if let isConnected = try? networkConnectivityManager.isReachable.value(), isConnected == true {
+            // when connected and hitting back in the navigation, make sure to reload the view to fix favorited movies
+            if let title = self.navigationItem.title, let contentType = ContentType(rawValue: title) {
+                displayFeatureCategory(contentType: contentType)
             }
         }
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        // stop monitoring for network if the view is off screen
+        networkConnectivityManager.stopMonitoring()
+    }
+
     private func setupUI() {
-        // set search bar
+        // configure search bar
         let search = UISearchController(searchResultsController: nil)
         search.obscuresBackgroundDuringPresentation = false
         search.searchBar.placeholder = "Search movies"
@@ -71,7 +68,7 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
         search.searchBar.setScopeBarButtonTitleTextAttributes([NSAttributedString.Key.font: font, NSAttributedString.Key.foregroundColor: UIColor.black], for: .selected)
         navigationItem.searchController = search
 
-        // set layout for collection
+        // configure layout for collection
         let layout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         let screenWidth = collectionView.bounds.size.width
@@ -82,6 +79,24 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
     }
 
     private func setupBindings() {
+        // bind and start monitoring for network connectivity issues
+        _ = networkConnectivityManager.isReachable.subscribe(onNext: { isConnected in
+
+            if isConnected {
+                // re-enable the search bar
+                self.navigationItem.searchController?.searchBar.isUserInteractionEnabled = true
+                self.navigationItem.searchController?.searchBar.alpha = 1.0
+            } else {
+                print("Network connection lost - disabling search bar")
+                // disable search bar
+                self.navigationItem.searchController?.searchBar.isUserInteractionEnabled = false
+                self.navigationItem.searchController?.searchBar.alpha = 0.75
+
+                self.displayCache()
+            }
+        })
+        networkConnectivityManager.startMonitoring()
+
         // bind collectionview datasource
         _ = viewModel?.contents.bind(to: collectionView.rx.items(cellIdentifier: "Cell", cellType: MovieCollectionViewCell.self) ) { index, content, cell in
 
@@ -92,24 +107,17 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
             let borderColor: UIColor = .black
             cell.layer.borderColor = borderColor.cgColor
 
-            // check for network connectivity
-            if NetworkConnectivityManager.shared.isReachable {
+
+            // check cache for the image
+            let id = String(content.id!)
+            if let image = ImageCacheManager.shared.getCachedImage(by: id) {
+                cell.imageView.image = image
+            } else if let url = content.posterUrl(), let data = try? Data(contentsOf: url){
                 // fetch poster image
-                if let url = content.posterUrl(), let data = try? Data(contentsOf: url){
-                    cell.imageView.image = UIImage(data: data)
-                } else {
-                    // default to the title
-                    cell.titleLbl.text = content.title
-                }
+                cell.imageView.image = UIImage(data: data)
             } else {
-                // check cache for the image
-                let id = String(content.id!)
-                if let image = ImageCacheManager.shared.getCachedImage(by: id) {
-                    cell.imageView.image = image
-                } else {
-                    // otherwise default to the title
-                    cell.titleLbl.text = content.title
-                }
+                // default to the title
+                cell.titleLbl.text = content.title
             }
 
             let emptyStar = "☆"
@@ -142,19 +150,23 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
             .disposed(by: self.disposeBag)
         }
 
-        // bind selection
+        // bind collectionView selection
         collectionView.rx.modelSelected(ContentProtocol.self)
             .subscribe(onNext: { content in
 
-                if let _ = content as? Movie {
-                    if let vc = UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(identifier: "MovieDetailViewController") as? MovieDetailViewController {
-                        vc.contentID = content.id
-                        self.navigationController?.pushViewController(vc, animated: true)
-                    }
-                } else {
-                    if let vc = UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(identifier: "TVDetailViewController") as? TVDetailViewController {
-                        vc.contentID = content.id
-                        self.navigationController?.pushViewController(vc, animated: true)
+                // only allow selection if connected to the internet
+                if let isConnected = try? self.networkConnectivityManager.isReachable.value(), isConnected == true {
+
+                    if let _ = content as? Movie {
+                        if let vc = UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(identifier: "MovieDetailViewController") as? MovieDetailViewController {
+                            vc.contentID = content.id
+                            self.navigationController?.pushViewController(vc, animated: true)
+                        }
+                    } else {
+                        if let vc = UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(identifier: "TVDetailViewController") as? TVDetailViewController {
+                            vc.contentID = content.id
+                            self.navigationController?.pushViewController(vc, animated: true)
+                        }
                     }
                 }
             })
@@ -191,6 +203,15 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
         .disposed(by: disposeBag)
     }
 
+    func displayCache() {
+        // display cached data
+        if let lastCategory = self.viewModel?.lastFeaturedCategory() {
+            print("Displaying cached data: \(lastCategory.rawValue)")
+            self.updateFeaturedCategoryUI(contentType: lastCategory)
+            self.viewModel?.getLastFeaturedCategoryCache()
+        }
+    }
+
     func displayFeatureCategory(contentType: ContentType) {
 
         updateFeaturedCategoryUI(contentType: contentType)
@@ -213,6 +234,7 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
         // update navigation title to reflect content type
         self.navigationController?.navigationBar.topItem?.title = contentType.rawValue
         // update scope bar to reflect content type
-        navigationItem.searchController?.searchBar.selectedScopeButtonIndex = ContentType.allCases.firstIndex(of: contentType)!
+        self.navigationItem.searchController?.searchBar.selectedScopeButtonIndex = ContentType.allCases.firstIndex(of: contentType)!
+        self.navigationItem.searchController?.searchBar.text = ""
     }
 }
