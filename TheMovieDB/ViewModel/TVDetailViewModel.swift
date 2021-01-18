@@ -8,7 +8,12 @@
 import RxSwift
 
 protocol TVDetailViewModelProtocol {
+
+    /// Observable for views to bind to.
     var tvDetail: Observable<TVDetail> { get }
+
+    /// Gets detailed info for TV content and updates the tvDetail observable.
+    /// - Parameter id: The id of the content.
     func getTVDetail(by id: Int)
 }
 
@@ -36,6 +41,7 @@ final class TVDetailViewModel: TVDetailViewModelProtocol, FavoriteContentProtoco
             }
             .subscribe(onNext: { [weak self] result in
                 if let result = result {
+                    // update observers
                     self?.tvDetailSubject.onNext(result)
                 }
             }, onError: { error in

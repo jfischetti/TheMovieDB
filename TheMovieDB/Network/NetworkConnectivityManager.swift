@@ -14,6 +14,7 @@ class NetworkConnectivityManager {
     let monitor = NWPathMonitor()
     private var isMonitoring = false
     private var status: NWPath.Status = .requiresConnection
+    /// Observable to know when there is a change in network connectivity.
     let isReachable: BehaviorSubject<Bool>
 
     init() {

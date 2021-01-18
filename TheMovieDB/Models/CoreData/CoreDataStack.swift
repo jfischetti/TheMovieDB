@@ -11,6 +11,7 @@ import UIKit
 
 class CoreDataStack: DataManager {
 
+    // Core Data constants.
     let ContentEntityName = "Content"
     let ContentEntityMovieType = "movie"
     let ContentEntityTVType = "tv"

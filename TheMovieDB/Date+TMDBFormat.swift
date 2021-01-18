@@ -8,12 +8,19 @@
 import Foundation
 
 extension Date {
+
+    /// Converts the given date to the format used by The Movie DB API.
+    /// - Returns: The formated date string.
     func toTMDBFormat() -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         return dateFormatter.string(from: self)
     }
 
+
+    /// Adds months to the given date.
+    /// - Parameter months: The number of months to add.
+    /// - Returns: The new date.
     func adding(months: Int) -> Date? {
         let calendar = Calendar(identifier: .gregorian)
 

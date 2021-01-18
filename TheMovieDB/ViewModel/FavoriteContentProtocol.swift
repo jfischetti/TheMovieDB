@@ -17,7 +17,7 @@ protocol FavoriteContentProtocol {
 
 extension FavoriteContentProtocol {
     func favoriteContent(content: ContentProtocol) {
-        // update favorite
+        // update favorite flag and save content
         self.dataManager.upsertContent(content: content, with: true, for: nil)
     }
 
@@ -26,6 +26,7 @@ extension FavoriteContentProtocol {
     }
 
     func unFavoriteContent(content: ContentProtocol) {
+        // update favorite flag and save content
         self.dataManager.upsertContent(content: content, with: false, for: nil)
     }
 }

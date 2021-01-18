@@ -8,7 +8,9 @@
 import Foundation
 import UIKit
 
+// Extension for converting an emoji to an image
 extension String {
+
     func image(with color: UIColor) -> UIImage? {
         let size = CGSize(width: 40, height: 40)
         UIGraphicsBeginImageContextWithOptions(size, false, 0)

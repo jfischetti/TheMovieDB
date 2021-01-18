@@ -12,7 +12,6 @@ import RxSwift
 class TVDetailViewController : UIViewController {
 
     private let disposeBag = DisposeBag()
-    var networkingManager = NetworkManager()
     var viewModel: (TVDetailViewModelProtocol & FavoriteContentProtocol)?
     var contentId: Int?
 
@@ -28,13 +27,13 @@ class TVDetailViewController : UIViewController {
     static func configure(contentId: Int) -> TVDetailViewController? {
         let vc = UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(identifier: "TVDetailViewController") as? TVDetailViewController
         vc?.contentId = contentId
+        vc?.viewModel = TVDetailViewModel(withAPI: TheMovieDBAPI(NetworkManager()), dataManager: CoreDataStack())
 
         return vc
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.viewModel = TVDetailViewModel(withAPI: TheMovieDBAPI(networkingManager), dataManager: CoreDataStack())
 
         self.setupUI()
         self.setupBindings()
@@ -64,32 +63,43 @@ class TVDetailViewController : UIViewController {
     }
 
     func setupTapToSaveButton(with content: ContentProtocol) {
-        // setup tap to save
+
         let emptyStar = "☆"
         let filledStar = "★"
 
+        // check if this is a favorite
         var isFavorite = self.viewModel?.isFavoriteContent(content: content)
+
+        // update initial the image
         if let isFavorite = isFavorite, isFavorite == true {
             self.saveImage.image = filledStar.image(with: .yellow)
         } else {
             self.saveImage.image = emptyStar.image(with: .white)
         }
 
+        // enable tap gesture
         self.saveImage.isUserInteractionEnabled = true
         let tapGesture = UITapGestureRecognizer()
         self.saveImage.addGestureRecognizer(tapGesture)
+
+        // bind tap gesture
         tapGesture.rx.event.bind(onNext: { recognizer in
 
+            // on tap, check if content is currently favorite content.
             isFavorite = self.viewModel?.isFavoriteContent(content: content)
             if let isFavorite = isFavorite, isFavorite == true {
+                // animate star flipping
                 UIView.transition(with: self.saveImage, duration: 1, options: .transitionFlipFromRight, animations: {
                     self.saveImage.image = emptyStar.image(with: .white)
                 }, completion: nil)
+
                 self.viewModel?.unFavoriteContent(content: content)
             } else {
+                // animate star flipping
                 UIView.transition(with: self.saveImage, duration: 1, options: .transitionFlipFromRight, animations: {
                     self.saveImage.image = filledStar.image(with: .yellow)
                 }, completion: nil)
+                
                 self.viewModel?.favoriteContent(content: content)
             }
         })

@@ -8,7 +8,12 @@
 import RxSwift
 
 protocol MovieDetailViewModelProtocol {
+
+    /// Observable for views to bind to
     var movieDetail: Observable<MovieDetail> { get }
+
+    /// Gets detailed info for Movie content and updates the movieDetail observable.
+    /// - Parameter id: The id of the content.
     func getMovieDetail(by id: Int)
 }
 
@@ -36,6 +41,7 @@ final class MovieDetailViewModel: MovieDetailViewModelProtocol, FavoriteContentP
             }
             .subscribe(onNext: { [weak self] result in
                 if let result = result {
+                    // update observers
                     self?.movieDetailSubject.onNext(result)
                 }
             }, onError: { error in
