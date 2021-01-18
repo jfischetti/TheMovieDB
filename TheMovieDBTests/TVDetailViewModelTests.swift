@@ -11,7 +11,7 @@ import RxTest
 
 class TVDetailViewModelTests: BaseTest {
 
-    func testGetTVDetail() throws {
+    func testGetTVDetail() {
         // arrange
         mockAPI.getTVDetailsReturnValue = tvDetail
         let viewModel = TVDetailViewModel(withAPI: mockAPI, dataManager: mockDataManager)

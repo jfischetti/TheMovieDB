@@ -46,8 +46,10 @@ class MockDataManager: DataManager {
     }
 
     var cacheFeatureCategoryWasCalled: Int = 0
+    var cacheFeatureCategoryWasCalledWithContentType: ContentType?
     func cacheFeatureCategory(contentType: ContentType, with contents: [ContentProtocol]) {
         cacheFeatureCategoryWasCalled += 1
+        cacheFeatureCategoryWasCalledWithContentType = contentType
     }
 
     var getCachedFeatureCategoryWasCalled: Int = 0
