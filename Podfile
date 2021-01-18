@@ -12,7 +12,6 @@ target 'TheMovieDB' do
   target 'TheMovieDBTests' do
     inherit! :search_paths
     # Pods for testing
-    pod 'RxBlocking'
     pod 'RxTest'
   end
 
