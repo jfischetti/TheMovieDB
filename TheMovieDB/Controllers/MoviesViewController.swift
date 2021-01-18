@@ -21,6 +21,10 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
 
     @IBOutlet weak var collectionView: UICollectionView!
 
+    static func configure() -> MoviesViewController? {
+        return UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(identifier: "MoviesViewController") as? MoviesViewController
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.viewModel = MoviesViewModel(withAPI: TheMovieDBAPI(networkingManager), dataManager: CoreDataStack())
@@ -158,13 +162,11 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
                 if let isConnected = try? self.networkConnectivityManager.isReachable.value(), isConnected == true {
 
                     if let _ = content as? Movie {
-                        if let vc = UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(identifier: "MovieDetailViewController") as? MovieDetailViewController {
-                            vc.contentID = content.id
+                        if let vc = MovieDetailViewController.configure(contentId: content.id!) {
                             self.navigationController?.pushViewController(vc, animated: true)
                         }
                     } else {
-                        if let vc = UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(identifier: "TVDetailViewController") as? TVDetailViewController {
-                            vc.contentID = content.id
+                        if let vc = TVDetailViewController.configure(contentId: content.id!) {
                             self.navigationController?.pushViewController(vc, animated: true)
                         }
                     }

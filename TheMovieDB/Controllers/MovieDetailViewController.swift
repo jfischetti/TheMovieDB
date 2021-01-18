@@ -14,7 +14,7 @@ class MovieDetailViewController : UIViewController {
     private let disposeBag = DisposeBag()
     var networkingManager = NetworkManager()
     var viewModel: (MovieDetailViewModelProtocol & FavoriteContentProtocol)?
-    var contentID: Int?
+    var contentId: Int?
 
     @IBOutlet weak var saveImage: UIImageView!
     @IBOutlet weak var imageView: UIImageView!
@@ -24,6 +24,13 @@ class MovieDetailViewController : UIViewController {
     @IBOutlet weak var releaseDateLbl: UILabel!
     @IBOutlet weak var overviewLbl: UILabel!
 
+    static func configure(contentId: Int) -> MovieDetailViewController? {
+        let vc = UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(identifier: "MovieDetailViewController") as? MovieDetailViewController
+        vc?.contentId = contentId
+        
+        return vc
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.viewModel = MovieDetailViewModel(withAPI: TheMovieDBAPI(networkingManager), dataManager: CoreDataStack())
@@ -31,7 +38,7 @@ class MovieDetailViewController : UIViewController {
         self.setupUI()
         self.setupBindings()
 
-        if let id = self.contentID {
+        if let id = self.contentId {
             self.viewModel?.getMovieDetail(by: id)
         }
     }

@@ -14,7 +14,7 @@ class TVDetailViewController : UIViewController {
     private let disposeBag = DisposeBag()
     var networkingManager = NetworkManager()
     var viewModel: (TVDetailViewModelProtocol & FavoriteContentProtocol)?
-    var contentID: Int?
+    var contentId: Int?
 
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var saveImage: UIImageView!
@@ -25,6 +25,12 @@ class TVDetailViewController : UIViewController {
     @IBOutlet weak var ratingLbl: UILabel!
     @IBOutlet weak var overviewLbl: UILabel!
 
+    static func configure(contentId: Int) -> TVDetailViewController? {
+        let vc = UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(identifier: "TVDetailViewController") as? TVDetailViewController
+        vc?.contentId = contentId
+
+        return vc
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,7 +39,7 @@ class TVDetailViewController : UIViewController {
         self.setupUI()
         self.setupBindings()
 
-        if let id = self.contentID {
+        if let id = self.contentId {
             self.viewModel?.getTVDetail(by: id)
         }
     }

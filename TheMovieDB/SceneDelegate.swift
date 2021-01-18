@@ -21,10 +21,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.window = UIWindow(windowScene: windowScene)
 
         // Instantiate initial view controller
-        guard let vc = UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(identifier: "MoviesViewController") as? MoviesViewController else {
+        guard let vc = MoviesViewController.configure() else {
             return
         }
-
 
         // Customize the search bar
         UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).backgroundColor = .white
