@@ -26,7 +26,7 @@ pod install
 1. To run all tests in the bundle, click the run button that appears to the right of "TheMovieDBTests" bundle.
 
 # Specification
-For App architecture design and decisions and user guid, please refer to the specification document. (Specification.pdf)
+For App architecture design and decisions and user guide, please refer to the specification document. (Specification.pdf)
 
 # Attributions
 All movie and tv show data is retrieved using The Movie DB API (www.themoviedb.org).
