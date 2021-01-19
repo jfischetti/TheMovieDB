@@ -76,8 +76,7 @@ class MoviesViewController : UIViewController, UICollectionViewDelegateFlowLayou
         // configure layout for collection
         let layout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        let screenWidth = collectionView.bounds.size.width
-        layout.itemSize = CGSize(width: screenWidth / 3, height: 200)
+        layout.itemSize = CGSize(width: 120, height: 200)
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         collectionView.collectionViewLayout = layout
